@@ -1,1 +1,18 @@
+#prototypevidthumb {
+   @include media-breakpoint-down(sm) {
+      width: 510px;
+   }
+}
 
+.title {
+   @include media-breakpoint-only(xs) {
+      font-size: 48px;
+   }
+   @include media-breakpoint-only(sm) {
+      font-size: 60px;
+   }
+}
+
+.text-underline {
+   text-decoration: underline !important;
+}
