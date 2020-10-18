@@ -15,7 +15,12 @@ export default function Bio() {
             <p className="lead">Full stack developer</p>
          </div>
          <div className="col-12 text-center mb-5">
-            <a className="d-inline-block" href="https://github.com/2284049">
+            <a
+               className="d-inline-block"
+               href="https://github.com/2284049"
+               target="_blank"
+               rel="noopener noreferrer"
+            >
                <img
                   src={githubLogo}
                   className="mr-2 mb-1"
@@ -28,6 +33,8 @@ export default function Bio() {
                className="d-inline-block"
                href="www.linkedin.com/in/michelle-the-dev
             "
+               target="_blank"
+               rel="noopener noreferrer"
             >
                <img
                   src={linkedInLogo}
