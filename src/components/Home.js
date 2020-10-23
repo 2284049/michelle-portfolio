@@ -2,8 +2,9 @@ import React from "react";
 import "../style/master.scss";
 import Project from "./Project";
 import { projects, greeting } from "../data/projects";
-
+import orderBy from "lodash/orderBy";
 import Bio from "./Bio";
+import { safelyParseJson } from "../utils/helpers";
 
 console.log(projects);
 console.log(greeting);
@@ -15,25 +16,40 @@ export default class Home extends React.Component {
       const activeProjects = projects.filter((project) => {
          return project.isActive; // imagine we are returning the filtered results from an API
       });
+      const defaultOrder = '["postedAt", "desc"]';
+      const params = safelyParseJson(defaultOrder); // turns it into JavaScript
+      const orderedProjects = orderBy(activeProjects, params[0], params[1]);
+      // const orderedProjects = orderBy(activeProjects, ...params); Do it this way for unlimited parameters.
+
       this.state = {
-         activeProjects: activeProjects,
+         activeProjects: orderedProjects,
          isAdvancedView: false, // now Home has an initial state
-         displayedProjects: activeProjects, // starts as the activeProjects and then changes based on state changes from setSearchInput
+         displayedProjects: orderedProjects, // starts as the activeProjects and then changes based on state changes from setSearchInput
          searchInput: "",
+         projectOrder: defaultOrder,
       };
    }
 
-   setIsAdvancedView() {
-      this.setState({ isAdvancedView: !this.state.isAdvancedView });
-
-      // ANOTHER WAY TO WRITE THIS:
-      // if (this.state.isAdvancedView) {
-      //    // if it's already true, when it changes, we are going to set it to false (toggle)
-      //    this.setState({ isAdvancedView: false });
-      // } else {
-      //    this.setState({ isAdvancedView: true });
-      // }
+   updateState(e) {
+      let value = e.target.value;
+      if (value === "true" || value === "false") {
+         value = safelyParseJson(value); // "true" will turn into true
+      }
+      // eslint-disable-next-line
+      if (value == Number(value)) {
+         // "4" == 4
+         value = safelyParseJson(value); // "4" will turn into 4
+      }
+      this.setState({ [e.target.name]: value });
    }
+
+   // ANOTHER WAY TO WRITE THIS:
+   // if (this.state.isAdvancedView) {
+   //    // if it's already true, when it changes, we are going to set it to false (toggle)
+   //    this.setState({ isAdvancedView: false });
+   // } else {
+   //    this.setState({ isAdvancedView: true });
+   // }
 
    setSearchInput(e) {
       const searchInput = e.target.value;
@@ -49,6 +65,17 @@ export default class Home extends React.Component {
                   projectDesc.includes(lowerCasedInput)
                );
             }),
+         };
+      });
+   }
+
+   setProjectOrder(e) {
+      const projectOrder = e.target.value;
+      const params = safelyParseJson(projectOrder);
+      this.setState((prevState) => {
+         return {
+            projectOrder: projectOrder,
+            displayedProjects: orderBy(prevState.displayedProjects, ...params),
          };
       });
    }
@@ -77,16 +104,17 @@ export default class Home extends React.Component {
                            <input
                               type="checkbox"
                               className="custom-control-input"
-                              id="advanced-view-checkbox"
+                              id="isAdvancedView"
                               checked={this.state.isAdvancedView} //check the isAdvancedView object
-                              onChange={() => {
-                                 // when the element changes, change the state
-                                 this.setIsAdvancedView();
+                              name="isAdvancedView"
+                              value={!this.state.isAdvancedView}
+                              onChange={(e) => {
+                                 this.updateState(e);
                               }}
                            />
                            <label
                               className="custom-control-label"
-                              htmlFor="advanced-view-checkbox"
+                              htmlFor="isAdvancedView"
                            >
                               Advanced view
                            </label>
@@ -98,8 +126,16 @@ export default class Home extends React.Component {
                            <input
                               type="radio"
                               id="most-recent-radio"
-                              name="search-projects-radios"
+                              name="project-order"
                               className="custom-control-input"
+                              value='["postedAt", "desc"]'
+                              checked={
+                                 this.state.projectOrder ===
+                                 '["postedAt", "desc"]'
+                              }
+                              onChange={(e) => {
+                                 this.setProjectOrder(e);
+                              }}
                            />
                            <label
                               className="custom-control-label"
@@ -112,8 +148,16 @@ export default class Home extends React.Component {
                            <input
                               type="radio"
                               id="most-popular-radio"
-                              name="search-projects-radios"
+                              name="project-order"
                               className="custom-control-input"
+                              value='["rating", "desc"]'
+                              checked={
+                                 this.state.projectOrder ===
+                                 '["rating", "desc"]'
+                              }
+                              onChange={(e) => {
+                                 this.setProjectOrder(e);
+                              }}
                            />
                            <label
                               className="custom-control-label"

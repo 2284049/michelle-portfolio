@@ -6,7 +6,7 @@ export const projects = [
       desc:
          "Validation of email and password fields in Matchmake Me, following best security and UX practices.",
       totalMinutes: 3,
-      postedAt: 1602352989438,
+      postedAt: 1602354989438,
       githubUrl: "https://github.com/2284049/matchmakeme",
       image: "email-and-password-validation-of-matchmake-me.webp",
       youtubeURL: "https://youtu.be/7u1h8cfvSJ0",

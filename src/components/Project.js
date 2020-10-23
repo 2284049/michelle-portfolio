@@ -146,7 +146,7 @@ export default class Project extends React.Component {
       );
    }
 }
-
+// eslint-disable-next-line
 {
    /* Go to date-fns.org to see date format options.*/
 }
